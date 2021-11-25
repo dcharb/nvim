@@ -1,16 +1,16 @@
-set nocompatible     " Configure for VIM instead of VI
-let mapleader = ","  "set <leader> to ','
-
 set fdm=marker  " Set folding type as marker. This allows vimrc to use comments for folding.
 
 "  Vim-plug {{{
 "------------------------------------------------------------------------------"
 
-if has('win32')
-   call plug#begin('$HOME\vimfiles\plugged')
-elseif has('unix')
-   call plug#begin('$HOME/.vim/plugged')
+" Install vim-plug if it doesn't exist
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
+call plug#begin(stdpath('data') . '/plugged')
 
 Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries' }
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -27,11 +27,18 @@ call plug#end()
 
 " General settings {{{
 "------------------------------------------------------------------------------"
-set textwidth=120    " Wrap text at this column
-set autoindent       " Automatically indent
-set expandtab        " Insert spaces for tabs
-set shiftwidth=2     " Number of spaces for autoindent
-set tabstop=2        " How many spaces a tab is
+set autoindent    " Automatically indent
+set expandtab     " Insert spaces for tabs
+set ignorecase    " Ignore case when searching
+set shiftwidth=2  " Number of spaces for autoindent
+set tabstop=2     " How many spaces a tab is
+set textwidth=120 " Wrap text at this column
+
+" Use clipboard for all yank operations
+set clipboard+=unnamedplus
+
+" Diff options
+set diffopt=filler,vertical
 
 " Ignore some file extensions when opening files
 set wildignore+=*/.git/*,*.swp,*.bak
@@ -46,6 +53,8 @@ colors slate
 
 " Custom shortcuts {{{
 "------------------------------------------------------------------------------"
+let mapleader = ","  "set <leader> to ','
+
 " Change working directory to current file directory
 nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>   
 
@@ -53,14 +62,10 @@ nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 inoremap ;; <ESC>
 
 " Moving between windows easier
-"nnoremap <c-h> <C-W>h
-"nnoremap <c-l> <C-W>l
-"nnoremap <c-k> <C-W>k
-"nnoremap <c-j> <C-W>j
-
-" Copy & Paste using clipboard
-"vmap <leader>cop "+y
-"nnoremap <leader>pas "+gp
+nnoremap <c-h> <C-W>h
+nnoremap <c-l> <C-W>l
+nnoremap <c-k> <C-W>k
+nnoremap <c-j> <C-W>j
 
 " }}}
 
